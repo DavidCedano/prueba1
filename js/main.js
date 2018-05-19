@@ -27,25 +27,31 @@ function mkLog(text){
 */
 function onBodyLoad() {    
 	document.addEventListener("deviceready", onDeviceReady, false);
+	alert('estoy en onBodyLoad');
 }
 
 function onDeviceReady(){
 	mkLog("Aplicación cargada y lista");
+	alert('Aplicación cargada y lista');
     //navigator.notification.alert("PhoneGap is working");
 	
 	existe_db = window.localStorage.getItem("existe_db");
 	db = window.openDatabase("agenda_curso", "1.0", "DB del curso Phonegap", 200000);
 	if(existe_db == null){
+		alert('voy al metodo creaDB');
 		creaDB();
 	}else{
+		alert('voy al metodo cargaDatos');
 		cargaDatos();
 	}
 	
 	
 	$("#b_guardar").click(function(e){
 		if($.id != -1){
+			alert('voy al metodo saveEditForm');
 		 	saveEditForm();
 		 }else{
+		 	alert('voy al metodo saveNewForm');
 			saveNewForm();
 		 }
 	 });
@@ -62,6 +68,7 @@ function creaDB(){
 
 function creaNuevaDB(tx){
 	mkLog("Creando base de datos");
+	alert('creando base de datos');
 	
 	tx.executeSql('DROP TABLE IF EXISTS agenda_curso');
 	
@@ -77,6 +84,8 @@ function creaNuevaDB(tx){
 	tx.executeSql(sql);
 	
 	tx.executeSql("INSERT INTO agenda_curso (id,nombre,apellidos,telefono,categoria,foto,email) VALUES (1,'Mónica','Olivarría','+6699900970','amigo','','m.olivarria@ccumazatlan.mx')");
+
+	alert('inserte el predeterminado');
 }
 
 
@@ -101,16 +110,18 @@ function cargaDatos(){
 
 function cargaRegistros(tx){
 	mkLog("Cargando registros de la base de datos");
+	alert('cargando registros de la base de datos');
 	tx.executeSql('SELECT * FROM agenda_curso', [], cargaDatosSuccess, errorDB);
 }
 
 function cargaDatosSuccess(tx, results){
 	mkLog("Recibidos de la DB " + results.rows.length + " registros");
+	alert("Recibidos de la DB " + results.rows.length + " registros");
 	if(results.rows.length == 0){
 		mkLog("No se han recibido registros");
 		navigator.notification.alert("No hay contactos en la base de datos");
 	}
-	
+	alert("Voy a cargar registros");
 	for(var i=0; i<results.rows.length; i++){
 		var persona = results.rows.item(i);
 		var selector = $("#lista_" + persona.categoria + " ul");
@@ -147,6 +158,7 @@ $(document).on("pagebeforeshow", "#detalle", function(){
 
 function queryDBFindByID(tx) {
     tx.executeSql('SELECT * FROM agenda_curso WHERE id='+$.id, [], queryDetalleSuccess, errorDB);
+    alert("pase la consulta");
 }
 
 function queryDetalleSuccess(tx, results) {
@@ -154,6 +166,7 @@ function queryDetalleSuccess(tx, results) {
 	if(results.rows.length == 0){
 		mkLog("No se han recibido registros para la vista detalle");
 		navigator.notification.alert("No hay detalles para ese elemento");
+		alert("No hay detalles para ese elemento");
 	}
 	
 	$.registro = results.rows.item(0);
@@ -179,6 +192,7 @@ function queryDetalleSuccess(tx, results) {
 //vista de la página de edición
 $(document).on('pagebeforeshow', '#form', function(){ 
 	mkLog('ID recuperado en vista form: ' + $.id);
+	alert('ID recuperado en vista AgregarServicio: ' + $.id);
 	
 	initForm();
 	if(db != null && $.id != -1){
@@ -188,13 +202,16 @@ $(document).on('pagebeforeshow', '#form', function(){
 
 function queryDBFindByIDForm(tx) {
     tx.executeSql('SELECT * FROM agenda_curso WHERE id='+$.id, [], queryFormSuccess, errorDB);
+    alert('estoy en la 2da consulta');
 }
 
 function queryFormSuccess(tx, results) {
 	mkLog("Recibidos de la DB en vista Form" + results.rows.length + " registros");
+	alert("Recibidos de la DB en vista Form" + results.rows.length + " registros");
 	if(results.rows.length == 0){
 		mkLog("No se han recibido registros para la vista form");
 		navigator.notification.alert("No hay detalles para ese elemento");
+		alert("No hay detalles para ese elemento");
 	}
 	
 	$.registro = results.rows.item(0);
